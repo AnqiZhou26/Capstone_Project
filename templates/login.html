@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form method="POST" enctype="multipart/form-data">
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username"><br>
+      <label for="photo">Photo with mask:</label>
+      <input type="file" name="photo" id="photo"><br>
+      <button type="submit" name="submit">Submit</button>
+      <button type="button" onclick="location.href='/signup'">Signup</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </body>
+</html>

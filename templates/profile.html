@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+  </head>
+  <body>
+    <h1>Hello, {{ username }}!</h1>
+    <p>Here is your profile information:</p>
+    <ul>
+      <li>Username: {{ username }}</li>
+      <li>Photo with mask: <img src="{{ url_for('static', filename='uploads/photo_mask.jpg') }}" alt="Photo with mask" width="250" height="250"></li>
+      <li>Photo without mask: <img src="{{ url_for('static', filename='uploads/photo_no_mask.jpg') }}" alt="Photo without mask" width="250" height="250"></li>
+    </ul>
+    <button type="button" onclick="location.href='/logout'">Logout</button>
+  </body>
+</html>
