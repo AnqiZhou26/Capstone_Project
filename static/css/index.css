@@ -1,1 +1,38 @@
+body
+{
+    font-family: "Open Sans", sans-serif;
+    color: white;
+    background-image: url('../img/background.jpg');
+    background-size: 100%
+}
 
+#div-body
+{
+    padding: 80px 140px
+}
+
+h1
+{
+    font-size: 50px
+}
+
+#div-body button
+{
+    font-family: "Open Sans", sans-serif;
+    font-size: 24px;
+    color: white;
+    background-color: rgb(23, 12, 88);
+    border: 3px solid rgb(66, 231, 224);
+    border-radius: 7px;
+    padding: 10px 40px;
+    margin-top: 30px
+}
+
+#div-body button:hover
+{
+    font-weight: bolder;
+    color: rgb(23, 12, 88);
+    background-color: white;
+    border-color: white;
+    cursor: pointer
+}
