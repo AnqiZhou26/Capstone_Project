@@ -1,0 +1,44 @@
+body
+{
+    font-family: "Open Sans", sans-serif;
+    background-image: url('../img/log_background.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat
+}
+
+h1
+{
+    font-size: 40px
+}
+
+#div1 p
+{
+    font-size: 20px
+}
+#div1
+{
+    text-align: left;
+    margin-top: 80px
+}
+
+ul {
+  list-style: none; /* remove default bullet points */
+  display: flex; /* set the container to use flexbox layout */
+  justify-content: space-between; /* distribute items evenly */
+}
+
+li {
+  /* style each list item */
+  padding: 80px
+}
+
+button
+{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    color: white;
+    background-color: rgb(23, 12, 88);
+    border: 1px solid rgb(66, 231, 224);
+    border-radius: 5px;
+    padding: 10px 40px
+}
