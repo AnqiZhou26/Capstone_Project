@@ -8,6 +8,7 @@ import cv2
 from load import *
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense
+import tkinter as tk
 
 
 global model
@@ -53,24 +54,74 @@ def preprocess_image(img):
 def home():
     return render_template('index.html')
 
+@app.route("/scan")
+def scan():
+    cascPath = r"haarcascade_frontalface_default.xml"
+    faceCascade = cv2.CascadeClassifier(cascPath)
+
+    cv2.startWindowThread()
+    cam = cv2.VideoCapture(0)
+    for i in range(300):
+        ret, frame = cam.read()
+
+        faces = faceCascade.detectMultiScale(
+            frame,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(30, 30)
+        )
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+        cv2.namedWindow("Face recognition", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("Face recognition", 800, 600)
+        cv2.moveWindow("Face recognition", 380, 110)
+        cv2.imshow("Face recognition", frame)
+        cv2.setWindowProperty("Face recognition", cv2.WND_PROP_TOPMOST, 1)
+
+        if len(faces) > 0 and i > 50:
+            os.chdir(app.config['UPLOAD_FOLDER'])
+            cv2.imwrite("scannedPhoto.jpg", frame)
+            os.chdir("../")
+            break
+
+        k = cv2.waitKey(1)
+        if k % 256 == 27:
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+    return ('', 204)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
-        photo = request.files['photo']
+        if 'photo' in request.files:
+            photo = request.files['photo']
 
-        # Check if the file is an allowed file type
-        if not allowed_file(photo.filename):
-            flash('Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'error')
-            return redirect(url_for('login'))
+            # Check if the file is an allowed file type
+            if not allowed_file(photo.filename):
+                flash('Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'error')
+                return redirect(url_for('login'))
 
-        # Save the file to the uploads folder
-        filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # Save the file to the uploads folder
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # load the image and prepare it for classification
-        img = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        preprocessed_img = preprocess_image(img)
+            # load the image and prepare it for classification
+            img = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            preprocessed_img = preprocess_image(img)
+
+        # Retrieve the scanned photo
+        else:
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], "scannedPhoto.jpg")
+            img = cv2.imread(filepath)
+            preprocessed_img = preprocess_image(img)
+            # Remove the photo from the working directory
+            os.remove(filepath)
 
         # Use the pre-trained model to predict
         prediction_masked = face_recognition_model.predict(preprocessed_img)
@@ -79,10 +130,10 @@ def login():
         prediction_unmasked = app.config['GLOBAL_VAR']
         # compute cosine similarity
         similarity = np.dot(prediction_unmasked, prediction_masked.T) / (
-                    np.linalg.norm(prediction_unmasked) * np.linalg.norm(prediction_masked))
+                np.linalg.norm(prediction_unmasked) * np.linalg.norm(prediction_masked))
 
         # check if similarity score is below threshold
-        if similarity < 0.7:
+        if similarity < 0.85:
             flash('Sorry, we could not recognize your face with mask. Please try again.', 'error')
             return redirect(url_for('login'))
 
@@ -98,20 +149,29 @@ def signup():
     if request.method == 'POST':
         # Get the username and photo from the form
         username = request.form['username']
-        photo = request.files['photo']
+        if 'photo' in request.files:
+            photo = request.files['photo']
 
-        # Check if the file is an allowed file type
-        if not allowed_file(photo.filename):
-            flash('Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'error')
-            return redirect(url_for('signup'))
+            # Check if the file is an allowed file type
+            if not allowed_file(photo.filename):
+                flash('Invalid file type. Only PNG, JPG, JPEG, and GIF files are allowed.', 'error')
+                return redirect(url_for('signup'))
 
-        # Save the file to the uploads folder
-        filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # Save the file to the uploads folder
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # load the image and prepare it for classification
-        img_unmasked = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        preprocessed_img_unmasked = preprocess_image(img_unmasked)
+            # load the image and prepare it for classification
+            img_unmasked = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            preprocessed_img_unmasked = preprocess_image(img_unmasked)
+
+        # Retrieve the scanned photo
+        else:
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], "scannedPhoto.jpg")
+            img = cv2.imread(filepath)
+            preprocessed_img_unmasked = preprocess_image(img)
+            # Remove the photo from the working directory
+            os.remove(filepath)
 
         # Use the pre-trained model to predict
         prediction = face_recognition_model.predict(preprocessed_img_unmasked)
