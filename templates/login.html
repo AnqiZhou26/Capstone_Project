@@ -2,17 +2,28 @@
 <html>
   <head>
     <title>Login</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+    <link rel="stylesheet" href="../static/css/login.css">
   </head>
   <body>
-    <h1>Login</h1>
-    <form method="POST" enctype="multipart/form-data">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username"><br>
-      <label for="photo">Photo with mask:</label>
-      <input type="file" name="photo" id="photo"><br>
-      <button type="submit" name="submit">Submit</button>
-      <button type="button" onclick="location.href='/signup'">Signup</button>
-    </form>
+    <div id="div1">
+        <h1>Login</h1><br>
+        <p>Great to see you again!<br><br>By logging, you agree to our Terms of use and Privacy Policy.</p>
+    </div>
+    <div id="div2">
+        <form method="POST" enctype="multipart/form-data">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username"><br>
+            <label for="photo">Insert a photo with mask:</label>
+            <input type="file" name="photo" id="photo" onclick="enableButton()"><br>
+            <label>Scan your face</label><br><br><br>
+            <a href="scan"><img src="../static/img/FR_icon.png" onclick="enableButton()"></a><br><br><br>
+            <button type="submit" name="submit">Submit</button><br>
+            <p>Don't have an account? Sign up Here!</p>
+            <button type="button" onclick="location.href='/signup'">Signup</button>
+        </form>
+    </div>
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
