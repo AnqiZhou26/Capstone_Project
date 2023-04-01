@@ -2,17 +2,26 @@
 <html>
   <head>
     <title>Signup</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+    <link rel="stylesheet" href="../static/css/signup.css">
   </head>
   <body>
-    <h1>Signup</h1>
-    <form method="POST" enctype="multipart/form-data">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username"><br>
-      <label for="photo">Photo without mask:</label>
-      <input type="file" name="photo" id="photo"><br>
-      <button type="submit" name="submit">Submit</button>
-      <button type="button" onclick="location.href='/login'">Login</button>
-    </form>
+    <div id="div1">
+        <h1>Sign Up</h1><br>
+        <p>By signing up, you agree to our Terms of use and Privacy Policy.</p>
+    </div>
+    <div id="div2">
+        <form method="POST" enctype="multipart/form-data">
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username"><br>
+          <label for="photo">Insert a photo without mask:</label>
+          <input type="file" name="photo" id="photo" onclick="enableButton()"><br>
+          <label>Scan your face</label><br><br><br>
+          <a href="scan"><img src="../static/img/FR_icon.png" onclick="enableButton()"></a><br><br><br>
+          <button type="submit" name="submit">Submit</button>
+          <button type="button" id="back" onclick="location.href='/login'">Back to Login</button>
+        </form>
+    </div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
